@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { X, ShoppingBag, ExternalLink } from 'lucide-react';
+import { X, ShoppingBag } from 'lucide-react';
+
 
 export default function ProductBanner() {
   const [isVisible, setIsVisible] = useState(false);
