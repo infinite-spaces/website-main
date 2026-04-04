@@ -1,0 +1,377 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Hairline&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Tenor+Sans&family=DM+Sans:wght@200;300;400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Biomimicry Organic Tech + Gold Chrome Luxe Color Palette */
+    --cream: #F7F3EC;
+    --linen: #EEE7D8;
+    --parchment: #E4D9C4;
+    --charcoal: #1A1C18;
+    --charcoal-deep: #0E0E0A;
+    --olive: #7A7860;
+    --sage: #4A5E4F;
+    --sage-light: #6B8C72;
+    --sage-mist: #C2D8C6;
+    --gold: #C9A84C;
+    --gold-light: #E2C97A;
+    --chrome: #B8C4C4;
+    --chrome-dark: #7A8888;
+    
+    --background: 40 30% 96%;
+    --foreground: 100 8% 10%;
+    --card: 40 30% 96%;
+    --card-foreground: 100 8% 10%;
+    --popover: 40 30% 96%;
+    --popover-foreground: 100 8% 10%;
+    --primary: 135 16% 33%;
+    --primary-foreground: 40 30% 96%;
+    --secondary: 40 25% 90%;
+    --secondary-foreground: 135 16% 33%;
+    --muted: 40 20% 88%;
+    --muted-foreground: 100 8% 40%;
+    --accent: 43 55% 54%;
+    --accent-foreground: 100 8% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 43 30% 80%;
+    --input: 40 20% 85%;
+    --ring: 43 55% 54%;
+    --radius: 1rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-[#F7F3EC] text-[#1A1C18] font-inter antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    line-height: 1.8;
+  }
+  
+  /* Selection - organic gold glow */
+  ::selection {
+    background: rgba(201, 168, 76, 0.25);
+    color: #1A1C18;
+  }
+}
+
+@layer components {
+  /* Font families */
+  .font-bungee {
+    font-family: 'Bungee Hairline', cursive;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+  }
+  
+  .font-cormorant {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+  }
+  
+  .font-tenor {
+    font-family: 'Tenor Sans', sans-serif;
+  }
+  
+  .font-dm {
+    font-family: 'DM Sans', sans-serif;
+  }
+  
+  /* Organic brand typography */
+  .brand-heading {
+    @apply uppercase tracking-[0.3em] font-light text-xs;
+    letter-spacing: 0.3em;
+  }
+  
+  .brand-caption {
+    @apply uppercase tracking-[0.25em] font-light text-[10px];
+    letter-spacing: 0.25em;
+  }
+  
+  /* Gold gradient text */
+  .text-gradient-gold {
+    @apply bg-gradient-to-r from-[#C9A84C] via-[#E2C97A] to-[#C9A84C] bg-clip-text text-transparent;
+  }
+  
+  /* Chrome gradient text */
+  .text-gradient-chrome {
+    background: linear-gradient(135deg,
+      #E8EEEE 0%,
+      #C8D4D4 20%,
+      #F4F8F8 40%,
+      #9EACAC 60%,
+      #D8E2E2 80%,
+      #C0CCCC 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Organic sage gradient */
+  .bg-gradient-sage {
+    @apply bg-gradient-to-br from-[#4A5E4F] to-[#6B8C72];
+  }
+  
+  /* Gold chrome gradient border effect */
+  .border-gold-glow {
+    border: 1px solid rgba(201, 168, 76, 0.15);
+  }
+  
+  /* Organic card style */
+  .card-organic {
+    @apply bg-[#F7F3EC]/80 backdrop-blur-sm rounded-2xl border border-[#C9A84C]/15;
+    box-shadow: 0 3px 4px rgba(26, 28, 24, 0.04);
+  }
+  
+  /* Section padding - organic breathing room */
+  .section-padding {
+    @apply py-24 md:py-32 lg:py-40;
+  }
+  
+  .container-padding {
+    @apply px-6 md:px-12 lg:px-20 xl:px-28;
+  }
+  
+  /* Gold button - organic hover */
+  .btn-gold {
+    @apply bg-gradient-to-r from-[#C9A84C] to-[#E2C97A] text-[#1A1C18] uppercase tracking-[0.25em] font-medium text-[10px] px-8 py-4 rounded-full;
+    box-shadow: 0 2px 8px rgba(201, 168, 76, 0.25);
+    transition: all 0.5s ease-out;
+  }
+  
+  .btn-gold:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(201, 168, 76, 0.35);
+  }
+  
+  /* Sage button */
+  .btn-sage {
+    @apply bg-[#4A5E4F] text-[#F7F3EC] uppercase tracking-[0.25em] font-medium text-[10px] px-6 py-3 rounded-full;
+    transition: all 0.5s ease-out;
+  }
+  
+  .btn-sage:hover {
+    @apply bg-[#6B8C72];
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(74, 94, 79, 0.25);
+  }
+  
+  /* Outline button */
+  .btn-outline {
+    @apply border border-[#4A5E4F]/40 text-[#4A5E4F] uppercase tracking-[0.25em] font-medium text-[10px] px-6 py-3 rounded-full;
+    transition: all 0.5s ease-out;
+  }
+  
+  .btn-outline:hover {
+    @apply bg-[#4A5E4F] text-[#F7F3EC] border-[#4A5E4F];
+    transform: translateY(-4px);
+  }
+  
+  /* Organic divider */
+  .divider-gold {
+    @apply w-20 h-px;
+    background: linear-gradient(90deg, transparent, #C9A84C, transparent);
+  }
+  
+  /* Navigation link */
+  .nav-link {
+    @apply uppercase tracking-[0.2em] font-light text-[10px] text-[#1A1C18]/60 hover:text-[#4A5E4F] transition-all duration-500;
+  }
+  
+  .nav-link-active {
+    @apply text-[#4A5E4F];
+  }
+}
+
+@layer utilities {
+  /* Organic breathing animations - like lungs, like tide */
+  @keyframes breathe {
+    0%, 100% {
+      transform: scale(1) translateY(0);
+    }
+    50% {
+      transform: scale(1.03) translateY(-8px);
+    }
+  }
+  
+  @keyframes breathe-slow {
+    0%, 100% {
+      transform: scale(1) translate(0, 0);
+    }
+    50% {
+      transform: scale(1.05) translate(10px, -15px);
+    }
+  }
+  
+  @keyframes breathe-float {
+    0%, 100% {
+      transform: translateY(0) scale(1);
+      opacity: 0.4;
+    }
+    50% {
+      transform: translateY(-20px) scale(1.1);
+      opacity: 0.6;
+    }
+  }
+  
+  @keyframes organic-pulse {
+    0%, 100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(1.08);
+    }
+  }
+  
+  @keyframes cell-divide {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(1.2);
+      opacity: 0;
+    }
+  }
+  
+  /* Animation classes - slow, organic, never bounce */
+  .animate-breathe {
+    animation: breathe 8s ease-in-out infinite;
+  }
+  
+  .animate-breathe-slow {
+    animation: breathe-slow 12s ease-in-out infinite;
+  }
+  
+  .animate-breathe-float {
+    animation: breathe-float 10s ease-in-out infinite;
+  }
+  
+  .animate-organic-pulse {
+    animation: organic-pulse 6s ease-in-out infinite;
+  }
+  
+  .animate-cell-divide {
+    animation: cell-divide 8s ease-out infinite;
+  }
+  
+  /* Stagger delays for organic reveals */
+  .stagger-1 { animation-delay: 0.12s; }
+  .stagger-2 { animation-delay: 0.24s; }
+  .stagger-3 { animation-delay: 0.36s; }
+  .stagger-4 { animation-delay: 0.48s; }
+  .stagger-5 { animation-delay: 0.60s; }
+  .stagger-6 { animation-delay: 0.72s; }
+  
+  /* Scroll reveal - page grows, not loads */
+  .reveal-organic {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  }
+  
+  .reveal-organic.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Organic glass effect */
+  .glass-organic {
+    @apply bg-[#F7F3EC]/70 backdrop-blur-md;
+  }
+  
+  /* Subtle organic shadow */
+  .shadow-organic {
+    box-shadow: 0 3px 4px rgba(26, 28, 24, 0.04);
+  }
+  
+  /* Gold glow */
+  .glow-gold {
+    box-shadow: 0 0 40px rgba(201, 168, 76, 0.2);
+  }
+}
+
+/* Custom scrollbar - organic feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F7F3EC;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E4D9C4;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C9A84C;
+}
+
+/* Smooth organic transitions for all interactive elements */
+a, button {
+  transition: all 0.5s ease-out;
+}
+
+/* Organic image hover - gentle lift */
+img {
+  transition: transform 0.7s ease-out, filter 0.5s ease-out;
+}
+
+/* Organic line decoration */
+.organic-line {
+  position: relative;
+}
+
+.organic-line::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.4), transparent);
+}
+
+/* Organic blob shapes */
+.blob-organic {
+  border-radius: 60% 40% 55% 45% / 45% 55% 45% 55%;
+}
+
+.blob-organic-alt {
+  border-radius: 45% 55% 40% 60% / 55% 45% 55% 45%;
+}
+
+/* Seed/cell shape */
+.seed-shape {
+  border-radius: 70% 30% 65% 35% / 35% 65% 35% 65%;
+}
+
+/* Water drop shape */
+.water-shape {
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+}
+
+/* Hexagon shape helper */
+.hexagon {
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}

@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Client Onboarding — Infinite Spaces</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Tenor+Sans&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --gold: #d4ae4a;
+  --gold-deep: #8a6e2f;
+  --gold-dim: rgba(212,174,74,0.12);
+  --gold-glow: rgba(212,174,74,0.25);
+  --sage: #4a5e4f;
+  --sage-mid: #6b8c72;
+  --chrome: #ecf0f0;
+  --near-black: #0c0c0c;
+  --surface: #131513;
+  --surface-2: #1a1d1a;
+  --surface-3: #1f221f;
+  --text: rgba(236,240,240,0.9);
+  --text-dim: rgba(236,240,240,0.42);
+  --text-mid: rgba(236,240,240,0.65);
+  --border: rgba(212,174,74,0.16);
+  --border-focus: rgba(212,174,74,0.55);
+  --input-bg: rgba(255,255,255,0.04);
+  --input-bg-focus: rgba(212,174,74,0.06);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--near-black);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── AMBIENT BG ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 15% 20%, rgba(212,174,74,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 80%, rgba(74,94,79,0.07) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── HEADER ── */
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 20px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: rgba(12,12,12,0.92);
+  backdrop-filter: blur(12px);
+}
+.header-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.header-sup {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.header-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--chrome);
+  letter-spacing: 0.05em;
+}
+.header-doc {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── PROGRESS BAR ── */
+.progress-track {
+  position: fixed;
+  top: 69px; left: 0; right: 0;
+  z-index: 99;
+  height: 2px;
+  background: rgba(255,255,255,0.05);
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-deep), var(--gold));
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 12px rgba(212,174,74,0.4);
+}
+
+/* ── STEP INDICATORS ── */
+.steps-nav {
+  position: fixed;
+  top: 90px; left: 0; right: 0;
+  z-index: 98;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 48px;
+  background: rgba(12,12,12,0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(212,174,74,0.08);
+}
+.step-dot {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  opacity: 0.35;
+  transition: opacity 0.3s;
+}
+.step-dot.visited { opacity: 0.55; cursor: pointer; }
+.step-dot.active { opacity: 1; }
+.dot-circle {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-deep);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 9px;
+  color: var(--text-dim);
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+.step-dot.active .dot-circle {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--near-black);
+}
+.step-dot.visited .dot-circle {
+  background: rgba(212,174,74,0.15);
+  border-color: var(--gold-deep);
+  color: var(--gold);
+}
+.dot-label {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.step-dot.active .dot-label { color: var(--gold); }
+
+/* ── MAIN CONTAINER ── */
+.form-container {
+  position: relative;
+  z-index: 1;
+  padding-top: 152px;
+  padding-bottom: 80px;
+  min-height: 100vh;
+}
+
+/* ── PANELS ── */
+.panel {
+  display: none;
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 60px 48px;
+  animation: fadeUp 0.45s ease forwards;
+}
+.panel.active { display: block; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── WELCOME PANEL ── */
+.welcome-eyebrow {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+.welcome-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 5vw, 58px);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--chrome);
+  margin-bottom: 28px;
+}
+.welcome-title em { font-style: italic; color: var(--gold); }
+.welcome-body {
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--text-mid);
+  line-height: 1.9;
+  margin-bottom: 16px;
+  max-width: 580px;
+}
+.welcome-note {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-style: italic;
+  margin-bottom: 48px;
+  line-height: 1.7;
+}
+.section-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 52px;
+}
+.section-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+}
+.si-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 22px;
+  color: rgba(212,174,74,0.25);
+  width: 24px;
+  flex-shrink: 0;
+}
+.si-text {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+}
+
+/* ── SECTION HEADER ── */
+.section-eyebrow {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 300;
+  color: var(--chrome);
+  line-height: 1.15;
+  margin-bottom: 10px;
+}
+.section-title em { font-style: italic; color: var(--gold); }
+.section-desc {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text-dim);
+  line-height: 1.85;
+  margin-bottom: 44px;
+  max-width: 560px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── FORM ELEMENTS ── */
+.field-group {
+  margin-bottom: 36px;
+}
+.field-label {
+  display: block;
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: 10px;
+}
+.field-hint {
+  font-size: 12.5px;
+  font-weight: 300;
+  color: var(--text-dim);
+  font-style: italic;
+  margin-bottom: 10px;
+  line-height: 1.7;
+}
+.field-question {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--chrome);
+  margin-bottom: 12px;
+  line-height: 1.35;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="url"],
+select,
+textarea {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 14px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+}
+input::placeholder, textarea::placeholder { color: var(--text-dim); }
+input:focus, select:focus, textarea:focus {
+  border-color: var(--border-focus);
+  background: var(--input-bg-focus);
+  box-shadow: 0 0 0 3px rgba(212,174,74,0.08);
+}
+textarea { resize: vertical; min-height: 100px; line-height: 1.75; }
+select { cursor: pointer; }
+select option { background: #1a1d1a; color: var(--chrome); }
+
+/* Two-column grid */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ── SCALE SELECTOR ── */
+.scale-wrap {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.scale-btn {
+  width: 48px; height: 48px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  border-radius: 2px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.scale-btn:hover { border-color: var(--gold-deep); color: var(--chrome); }
+.scale-btn.selected {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--near-black);
+}
+.scale-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+.scale-label {
+  font-size: 10px;
+  font-weight: 300;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* ── CHECKBOX CHIPS ── */
+.chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  padding: 9px 16px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  border-radius: 2px;
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+.chip:hover { border-color: var(--gold-deep); color: var(--text); }
+.chip.selected {
+  background: var(--gold-dim);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* ── RADIO CARDS ── */
+.radio-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.radio-card {
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.radio-card:hover { border-color: var(--gold-deep); background: rgba(212,174,74,0.03); }
+.radio-card.selected {
+  border-color: var(--gold);
+  background: var(--gold-dim);
+}
+.rc-dot {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-deep);
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.radio-card.selected .rc-dot {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.radio-card.selected .rc-dot::after {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--near-black);
+}
+.rc-content {}
+.rc-title {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--chrome);
+  margin-bottom: 4px;
+}
+.rc-desc {
+  font-size: 12.5px;
+  font-weight: 300;
+  color: var(--text-dim);
+  line-height: 1.65;
+}
+
+/* ── DIVIDER ── */
+.field-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
+  margin: 44px 0;
+}
+
+/* ── NAVIGATION ── */
+.nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+.btn-back {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 12px 0;
+  transition: color 0.2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.btn-back:hover { color: var(--chrome); }
+.btn-back::before { content: '←'; font-size: 14px; }
+.btn-next {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  background: var(--gold);
+  border: none;
+  padding: 14px 36px;
+  cursor: pointer;
+  border-radius: 1px;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 10px;
+}
+.btn-next:hover { background: #e0bc55; box-shadow: 0 0 24px rgba(212,174,74,0.3); }
+.btn-next::after { content: '→'; font-size: 14px; }
+.btn-submit {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  background: linear-gradient(135deg, var(--gold), #e8c85a);
+  border: none;
+  padding: 16px 44px;
+  cursor: pointer;
+  border-radius: 1px;
+  transition: all 0.2s;
+}
+.btn-submit:hover { box-shadow: 0 0 32px rgba(212,174,74,0.4); }
+
+/* ── SUMMARY PANEL ── */
+.summary-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 40px;
+}
+.summary-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.summary-section-title {
+  padding: 14px 20px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.summary-rows {}
+.summary-row {
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(212,174,74,0.06);
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 16px;
+}
+.summary-row:last-child { border-bottom: none; }
+.sr-key {
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--text-dim);
+  font-style: italic;
+  padding-top: 1px;
+}
+.sr-val {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.print-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.btn-print {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: none;
+  border: 1px solid var(--gold-deep);
+  padding: 12px 28px;
+  cursor: pointer;
+  border-radius: 1px;
+  transition: all 0.2s;
+}
+.btn-print:hover { border-color: var(--gold); background: var(--gold-dim); }
+.btn-copy {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: none;
+  border: 1px solid var(--border);
+  padding: 12px 28px;
+  cursor: pointer;
+  border-radius: 1px;
+  transition: all 0.2s;
+}
+.btn-copy:hover { color: var(--chrome); border-color: rgba(255,255,255,0.2); }
+
+/* ── FOOTER ── */
+.form-footer {
+  text-align: center;
+  padding: 24px;
+  border-top: 1px solid var(--border);
+  margin-top: 48px;
+  position: relative; z-index: 1;
+}
+.form-footer p {
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.form-footer em {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--gold-deep);
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 600px) {
+  .site-header { padding: 16px 20px; }
+  .steps-nav { padding: 12px 16px; gap: 6px; }
+  .dot-label { display: none; }
+  .panel { padding: 40px 20px; }
+  .summary-row { grid-template-columns: 1fr; gap: 4px; }
+}
+
+
+/* ── SHEET STATUS ── */
+.sheet-status {
+  margin-top: 20px;
+  padding: 14px 20px;
+  border-radius: 2px;
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  display: none;
+}
+.sheet-status.sending { display: block; background: rgba(212,174,74,0.08); color: var(--gold); border: 1px solid var(--border); }
+.sheet-status.success  { display: block; background: rgba(74,94,79,0.15); color: var(--sage-mid); border: 1px solid rgba(107,140,114,0.3); }
+.sheet-status.error    { display: block; background: rgba(180,60,60,0.1); color: #c47; border: 1px solid rgba(180,60,60,0.2); }
+
+@media print {
+  /* Hide all UI chrome */
+  .site-header, .progress-track, .steps-nav, .nav-row,
+  .print-actions, .form-footer, body::before { display: none !important; }
+
+  /* Force white everywhere — overrides background-color suppression */
+  *, *::before, *::after {
+    background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  html, body {
+    background: white !important;
+    color: #111 !important;
+    font-size: 13px;
+  }
+
+  .form-container { padding-top: 0 !important; }
+  .panel { padding: 24px 0 !important; display: none !important; }
+  .panel#panel-6 { display: block !important; }
+
+  /* Summary title bar */
+  .section-eyebrow { color: #8a6e2f !important; font-size: 9px; }
+  .section-title { color: #111 !important; font-size: 26px !important; }
+  .section-title em { color: #8a6e2f !important; }
+  .section-desc { color: #555 !important; border-bottom-color: #ddd !important; }
+
+  /* Summary sections */
+  .summary-grid { gap: 6px !important; }
+  .summary-section {
+    border: 1px solid #ddd !important;
+    border-radius: 2px;
+    page-break-inside: avoid;
+  }
+  .summary-section-title {
+    background: #f7f4ee !important;
+    color: #8a6e2f !important;
+    border-bottom: 1px solid #e0d8c8 !important;
+    padding: 10px 16px !important;
+    font-size: 8.5px !important;
+  }
+  .summary-row {
+    border-bottom: 1px solid #f0ede6 !important;
+    padding: 10px 16px !important;
+  }
+  .sr-key { color: #888 !important; font-size: 11px !important; }
+  .sr-val { color: #111 !important; font-size: 13px !important; }
+
+  /* Print header to replace site-header */
+  .print-header-inject {
+    display: block !important;
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #d4ae4a;
+  }
+  .print-header-inject .ph-brand {
+    font-family: 'Tenor Sans', sans-serif;
+    font-size: 8px;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: #8a6e2f !important;
+    margin-bottom: 4px;
+  }
+  .print-header-inject .ph-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    color: #111 !important;
+  }
+  .print-header-inject .ph-title em {
+    font-style: italic;
+    color: #8a6e2f !important;
+  }
+  .print-header-inject .ph-meta {
+    font-size: 10px;
+    color: #888 !important;
+    margin-top: 4px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-brand">
+    <span class="header-sup">Infinite Spaces</span>
+    <span class="header-name">Client Onboarding</span>
+  </div>
+  <span class="header-doc">Confidential · Discovery Form</span>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-track">
+  <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+</div>
+
+<!-- STEP DOTS -->
+<nav class="steps-nav" id="stepsNav">
+  <div class="step-dot active" data-step="0" onclick="goToStep(0)">
+    <div class="dot-circle">✦</div>
+    <span class="dot-label">Welcome</span>
+  </div>
+  <div class="step-dot" data-step="1" onclick="goToStep(1)">
+    <div class="dot-circle">1</div>
+    <span class="dot-label">Business</span>
+  </div>
+  <div class="step-dot" data-step="2" onclick="goToStep(2)">
+    <div class="dot-circle">2</div>
+    <span class="dot-label">AI Fluency</span>
+  </div>
+  <div class="step-dot" data-step="3" onclick="goToStep(3)">
+    <div class="dot-circle">3</div>
+    <span class="dot-label">Pain Points</span>
+  </div>
+  <div class="step-dot" data-step="4" onclick="goToStep(4)">
+    <div class="dot-circle">4</div>
+    <span class="dot-label">Tech Stack</span>
+  </div>
+  <div class="step-dot" data-step="5" onclick="goToStep(5)">
+    <div class="dot-circle">5</div>
+    <span class="dot-label">Fears & Goals</span>
+  </div>
+  <div class="step-dot" data-step="6" onclick="goToStep(6)">
+    <div class="dot-circle">6</div>
+    <span class="dot-label">Summary</span>
+  </div>
+</nav>
+
+<div class="form-container">
+
+  <!-- ══ WELCOME ══ -->
+  <div class="panel active" id="panel-0">
+    <p class="welcome-eyebrow">Infinite Spaces · Client Discovery</p>
+    <h1 class="welcome-title">Let's understand<br>your <em>world</em> first.</h1>
+    <p class="welcome-body">Before we talk about AI, we want to understand your business — how it runs, what it needs, and where you feel the friction. This form is the foundation of everything we'll build together.</p>
+    <p class="welcome-body">There are no wrong answers here. The more honest and specific you are, the more useful our work together will be.</p>
+    <p class="welcome-note">This form takes approximately 12–18 minutes to complete. Your responses are confidential and used exclusively to prepare your consultation.</p>
+
+    <div class="section-list">
+      <div class="section-item"><span class="si-num">1</span><span class="si-text">Your Business & Context</span></div>
+      <div class="section-item"><span class="si-num">2</span><span class="si-text">AI Curiosity & Fluency</span></div>
+      <div class="section-item"><span class="si-num">3</span><span class="si-text">Pain Points & Friction</span></div>
+      <div class="section-item"><span class="si-num">4</span><span class="si-text">Current Tech Stack</span></div>
+      <div class="section-item"><span class="si-num">5</span><span class="si-text">Fears, Reservations & Goals</span></div>
+    </div>
+
+    <div class="nav-row" style="border-top: none; padding-top: 0; justify-content: flex-end;">
+      <button class="btn-next" onclick="nextStep()">Begin</button>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 1: BUSINESS ══ -->
+  <div class="panel" id="panel-1">
+    <p class="section-eyebrow">Section 01 of 05</p>
+    <h2 class="section-title">Your Business<br>& <em>Context</em></h2>
+    <p class="section-desc">Help me understand the landscape of your organization — the people, the pace, and the way decisions get made.</p>
+
+    <div class="two-col">
+      <div class="field-group">
+        <label class="field-label">Your Name</label>
+        <input type="text" id="f_name" placeholder="Full name"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Your Role / Title</label>
+        <input type="text" id="f_role" placeholder="e.g. CEO, Head of Operations"/>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field-group">
+        <label class="field-label">Company Name</label>
+        <input type="text" id="f_company" placeholder="Organization name"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Industry / Sector</label>
+        <input type="text" id="f_industry" placeholder="e.g. Hospitality, Real Estate, Retail"/>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field-group">
+        <label class="field-label">Email Address</label>
+        <input type="email" id="f_email" placeholder="your@email.com"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Company Website</label>
+        <input type="url" id="f_website" placeholder="https://"/>
+      </div>
+    </div>
+
+    <div class="field-divider"></div>
+
+    <div class="field-group">
+      <p class="field-question">How would you describe your business to someone who has never heard of it?</p>
+      <p class="field-hint">Don't use industry jargon — explain it the way you would to a curious friend.</p>
+      <textarea id="f_biz_desc" rows="4" placeholder="What you do, who you serve, and why it matters..."></textarea>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Team Size</label>
+      <div class="radio-cards" id="rc_team_size">
+        <div class="radio-card" onclick="selectRadio('rc_team_size', this, 'f_team_size', 'Solo / Founder-led (1–2)')">
+          <div class="rc-dot"></div><div class="rc-content"><div class="rc-title">Solo / Founder-led</div><div class="rc-desc">1–2 people</div></div>
+        </div>
+        <div class="radio-card" onclick="selectRadio('rc_team_size', this, 'f_team_size', 'Small team (3–15)')">
+          <div class="rc-dot"></div><div class="rc-content"><div class="rc-title">Small team</div><div class="rc-desc">3–15 people</div></div>
+        </div>
+        <div class="radio-card" onclick="selectRadio('rc_team_size', this, 'f_team_size', 'Mid-size (16–100)')">
+          <div class="rc-dot"></div><div class="rc-content"><div class="rc-title">Mid-size</div><div class="rc-desc">16–100 people</div></div>
+        </div>
+        <div class="radio-card" onclick="selectRadio('rc_team_size', this, 'f_team_size', 'Enterprise (100+)')">
+          <div class="rc-dot"></div><div class="rc-content"><div class="rc-title">Enterprise</div><div class="rc-desc">100+ people</div></div>
+        </div>
+      </div>
+      <input type="hidden" id="f_team_size"/>
+    </div>
+
+    <div class="field-group">
+      <p class="field-question">Who are your customers, and how do you typically reach them?</p>
+      <textarea id="f_customers" rows="3" placeholder="Who they are, how they find you, what they need from you..."></textarea>
+    </div>
+
+    <div class="field-group">
+      <p class="field-question">What does a typical week look like operationally — where does most of your team's time go?</p>
+      <textarea id="f_ops_week" rows="3" placeholder="Day-to-day activities, recurring tasks, where attention gets consumed..."></textarea>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep()">Back</button>
+      <button class="btn-next" onclick="nextStep()">AI Fluency</button>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 2: AI FLUENCY ══ -->
+  <div class="panel" id="panel-2">
+    <p class="section-eyebrow">Section 02 of 05</p>
+    <h2 class="section-title">AI Curiosity<br>& <em>Fluency</em></h2>
+    <p class="section-desc">There's no right level to be at. I want to understand where you're starting from so I can meet you there — not where I assume you are.</p>
+
+    <div class="field-group">
+      <p class="field-question">What brought you to exploring AI consulting right now?</p>
+      <p class="field-hint">Something shifted — what was it? A conversation, a frustration, a competitor, a moment of curiosity?</p>
+      <textarea id="f_why_now" rows="4" placeholder="What triggered this interest or this search..."></textarea>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">How would you rate your current AI fluency?</label>
+      <p class="field-hint">1 = "I've heard the word ChatGPT" · 10 = "I build custom AI workflows regularly"</p>
+      <div class="scale-wrap" id="scale_fluency"></div>
+      <div class="scale-labels">
+        <span class="scale-label">Complete beginner</span>
+        <span class="scale-label">Advanced practitioner</span>
+      </div>
+      <input type="hidden" id="f_ai_fluency"/>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Which AI tools have you or your team used? (Select all that apply)</label>
+      <div class="chip-grid" id="chips_ai_tools">
+        <div class="chip" onclick="toggleChip(this)">ChatGPT</div>
+        <div class="chip" onclick="toggleChip(this)">Claude</div>
+        <div class="chip" onclick="toggleChip(this)">Gemini</div>
+        <div class="chip" onclick="toggleChip(this)">Copilot / Microsoft 365 AI</div>
+        <div class="chip" onclick="toggleChip(this)">Midjourney / DALL-E</div>
+        <div class="chip" onclick="toggleChip(this)">Notion AI</div>
+        <div class="chip" onclick="toggleChip(this)">HubSpot AI</div>
+        <div class="chip" onclick="toggleChip(this)">Zapier / Make</div>
+        <div class="chip" onclick="toggleChip(this)">Perplexity</div>
+        <div class="chip" onclick="toggleChip(this)">Voice assistants (Alexa, Siri)</div>
+        <div class="chip" onclick="toggleChip(this)">None yet</div>
+      </div>
+      <input type="hidden" id="f_ai_tools"/>
+    </div>
+
+    <div class="field-group">
+      <p class="field-question">Has your business attempted to implement any AI tools or automations before?</p>
+      <div class="radio-cards" id="rc_ai_prev">
+        <div class="radio-card" onclick="selectRadio('rc_ai_prev', this, 'f_ai_prev', 'No — this would be our first implementation')">
+          <div class="rc-dot"></div><div class="rc-content"><div class="rc-title">No</div><div class="rc-desc">This would be our first real implementation</div></div>
+        </div>
+        <div class="radio-card" onclick="selectRadio('rc_ai_prev', this, 'f_ai_prev', 'We tried but it didn\'t stick')">
+          <div class="rc-dot"></div><div class="rc-content"><div class="rc-title">We tried, but it didn't stick</div><div class="rc-desc">Some experiments that didn't lead anywhere lasting</div></div>
+        </div>
+        <div class="radio-card" onclick="selectRadio('rc_ai_prev', this, 'f_ai_prev', 'Yes — we have some AI in use already')">
+          <div class="rc-dot"></div><div class="rc-content"><div class="rc-title">Yes — some things are already running</div><div class="rc-desc">We have AI in use but want to expand or improve</div></div>
+        </div>
+      </div>
+      <input type="hidden" id="f_ai_prev"/>
+    </div>
+
+    <div class="field-group">
+      <p class="field-question">If you've experimented with AI before — what worked, and what didn't?</p>
+      <p class="field-hint">Skip this if you're starting fresh.</p>
+      <textarea id="f_ai_exp" rows="3" placeholder="What you tried, where it fell short, what surprised you..."></textarea>
+    </div>
+
+    <div class="field-group">
+      <p class="field-question">In an ideal world, what would AI make easier or possible in your business that feels hard or impossible today?</p>
+      <textarea id="f_ai_dream" rows="4" placeholder="Don't limit yourself to what you think is realistic — describe the outcome you'd love..."></textarea>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep()">Back</button>
+      <button class="btn-next" onclick="nextStep()">Pain Points</button>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 3: PAIN POINTS ══ -->
+  <div class="panel" id="panel-3">
+    <p class="section-eyebrow">Section 03 of 05</p>
+    <h2 class="section-title">Friction, <em>Bottlenecks</em><br>& Pain Points</h2>
+    <p class="section-desc">This is the most important section. Be as specific and honest as you can — the problems you name here are exactly what we'll work to untangle.</p>
+
+    <div class="field-group">
+      <p class="field-question">What is the single biggest operational frustration in your business right now?</p>
+      <p class="field-hint">The thing that, if it disappeared tomorrow, would make the biggest difference to your team.</p>
+      <textarea id="f_top_pain" rows="4" placeholder="Name it directly — the more specific the better..."></textarea>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Which of these operational challenges do you recognize? (Select all that apply)</label>
+      <div class="chip-grid" id="chips_challenges">
+        <div class="chip" onclick="toggleChip(this)">Too much manual data entry</div>
+        <div class="chip" onclick="toggleChip(this)">Slow or inconsistent customer responses</div>
+        <div class="chip" onclick="toggleChip(this)">Reporting that takes too long to prepare</div>
+        <div class="chip" onclick="toggleChip(this)">Onboarding new staff is slow and expensive</div>
+        <div class="chip" onclick="toggleChip(this)">Too much time in email</div>
+        <div class="chip" onclick="toggleChip(this)">Scheduling and coordination chaos</div>
+        <div class="chip" onclick="toggleChip(this)">Hard to get insights from our data</div>
+        <div class="chip" onclick="toggleChip(this)">Marketing content takes too long to produce</div>
+        <div class="chip" onclick="toggleChip(this)">Leads fall through the cracks</div>
+        <div class="chip" onclick="toggleChip(this)">Customer complaints about slow service</div>
+        <div class="chip" onclick="toggleChip(this)">Repetitive tasks eating team time</div>
+        <div class="chip" onclick="toggleChip(this)">Disconnected tools that don't talk to each other</div>
+        <div class="chip" onclick="toggleChip(this)">Inconsistent quality across the team</div>
+        <div class="chip" onclick="toggleChip(this)">Decision-making is slow without good data</div>
+      </div>
+      <input type="hidden" id="f_challenges"/>
+    </div>
+
+    <div class="field-group">
+      <p class="field-question">Where does your team spend the most time on tasks that feel repetitive or below their skill level?</p>
+      <textarea id="f_repetitive" rows="3" placeholder="Tasks that shouldn't require a human to execute every time..."></textarea>
+    </div>
+
+    <div class="field-group">
+      <p class="field-question">Are there any customer experience gaps you're aware of but haven't found a solution for yet?</p>
+      <textarea id="f_cx_gaps" rows="3" placeholder="Moments where customers wait too long, get confused, or don't get what they need..."></textarea>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">How urgent is solving these problems?</label>
+      <div class="radio-cards" id="rc_urgency">
+        <div class="radio-card" onclick="selectRadio('rc_urgency', this, 'f_urgency', 'Critical — affecting our ability to grow or operate')">
+          <div class="rc-dot"></div><div class="rc-content"><div class="rc-title">Critical</div><div class="rc-desc">Actively affecting our ability to grow or operate well</div></div>
+        </div>
+        <div class="radio-card" onclick="selectRadio('rc_urgency', this, 'f_urgency', 'Important — a drag on performance but manageable for now')">
+          <div class="rc-dot"></div><div class="rc-content"><div class="rc-title">Important</div><div class="rc-desc">A drag on performance, but manageable for now</div></div>
+        </div>
+        <div class="radio-card" onclick="selectRadio('rc_urgency', this, 'f_urgency', 'Forward-planning — exploring before it becomes urgent')">
+          <div class="rc-dot"></div><div class="rc-content"><div class="rc-title">Forward-planning</div><div class="rc-desc">We're exploring before it becomes a problem</div></div>
+        </div>
+      </div>
+      <input type="hidden" id="f_urgency"/>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep()">Back</button>
+      <button class="btn-next" onclick="nextStep()">Tech Stack</button>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 4: TECH STACK ══ -->
+  <div class="panel" id="panel-4">
+    <p class="section-eyebrow">Section 04 of 05</p>
+    <h2 class="section-title">Current<br><em>Tech Stack</em></h2>
+    <p class="section-desc">Understanding your existing tools helps me assess what's possible without disrupting what's already working. You don't need to know every detail — name what you can.</p>
+
+    <div class="field-group">
+      <label class="field-label">CRM / Customer Management</label>
+      <p class="field-hint">How do you track clients, leads, or customer relationships?</p>
+      <div class="chip-grid" id="chips_crm">
+        <div class="chip" onclick="toggleChip(this)">Salesforce</div>
+        <div class="chip" onclick="toggleChip(this)">HubSpot</div>
+        <div class="chip" onclick="toggleChip(this)">Zoho CRM</div>
+        <div class="chip" onclick="toggleChip(this)">Monday.com</div>
+        <div class="chip" onclick="toggleChip(this)">Pipedrive</div>
+        <div class="chip" onclick="toggleChip(this)">Airtable</div>
+        <div class="chip" onclick="toggleChip(this)">Spreadsheets only</div>
+        <div class="chip" onclick="toggleChip(this)">None / Not formalized</div>
+      </div>
+      <input type="hidden" id="f_crm"/>
+      <input type="text" id="f_crm_other" placeholder="Other CRM tool..." style="margin-top:10px;"/>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Communication & Collaboration</label>
+      <div class="chip-grid" id="chips_comms">
+        <div class="chip" onclick="toggleChip(this)">Slack</div>
+        <div class="chip" onclick="toggleChip(this)">Microsoft Teams</div>
+        <div class="chip" onclick="toggleChip(this)">Google Workspace</div>
+        <div class="chip" onclick="toggleChip(this)">Zoom</div>
+        <div class="chip" onclick="toggleChip(this)">Notion</div>
+        <div class="chip" onclick="toggleChip(this)">Asana / ClickUp</div>
+        <div class="chip" onclick="toggleChip(this)">Email only</div>
+      </div>
+      <input type="hidden" id="f_comms"/>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Marketing & Sales Tools</label>
+      <div class="chip-grid" id="chips_marketing">
+        <div class="chip" onclick="toggleChip(this)">Mailchimp</div>
+        <div class="chip" onclick="toggleChip(this)">ActiveCampaign</div>
+        <div class="chip" onclick="toggleChip(this)">Klaviyo</div>
+        <div class="chip" onclick="toggleChip(this)">Meta Ads Manager</div>
+        <div class="chip" onclick="toggleChip(this)">Google Ads</div>
+        <div class="chip" onclick="toggleChip(this)">Hootsuite / Buffer</div>
+        <div class="chip" onclick="toggleChip(this)">Canva</div>
+        <div class="chip" onclick="toggleChip(this)">Shopify</div>
+        <div class="chip" onclick="toggleChip(this)">WordPress</div>
+        <div class="chip" onclick="toggleChip(this)">Squarespace / Wix</div>
+      </div>
+      <input type="hidden" id="f_marketing"/>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Operations, Finance & Scheduling</label>
+      <div class="chip-grid" id="chips_ops">
+        <div class="chip" onclick="toggleChip(this)">QuickBooks</div>
+        <div class="chip" onclick="toggleChip(this)">Xero</div>
+        <div class="chip" onclick="toggleChip(this)">FreshBooks</div>
+        <div class="chip" onclick="toggleChip(this)">Square / Stripe</div>
+        <div class="chip" onclick="toggleChip(this)">Calendly / Acuity</div>
+        <div class="chip" onclick="toggleChip(this)">Mindbody</div>
+        <div class="chip" onclick="toggleChip(this)">Jobber</div>
+        <div class="chip" onclick="toggleChip(this)">ServiceTitan</div>
+        <div class="chip" onclick="toggleChip(this)">Gusto / ADP</div>
+      </div>
+      <input type="hidden" id="f_ops"/>
+      <input type="text" id="f_ops_other" placeholder="Other tools not listed..." style="margin-top:10px;"/>
+    </div>
+
+    <div class="field-group">
+      <p class="field-question">Are there any tools your team has strong opinions about — ones they love or refuse to give up?</p>
+      <p class="field-hint">This helps me design around what already has buy-in.</p>
+      <textarea id="f_beloved_tools" rows="3" placeholder="Tools that are non-negotiable for your team..."></textarea>
+    </div>
+
+    <div class="field-group">
+      <p class="field-question">Are there any tools causing the most frustration or that you'd happily replace?</p>
+      <textarea id="f_hated_tools" rows="3" placeholder="What isn't working and why..."></textarea>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">How would you describe your team's overall comfort with adopting new technology?</label>
+      <p class="field-hint">1 = "Any change creates resistance" · 10 = "We love trying new tools"</p>
+      <div class="scale-wrap" id="scale_tech_comfort"></div>
+      <div class="scale-labels">
+        <span class="scale-label">Very resistant to change</span>
+        <span class="scale-label">Enthusiastic early adopters</span>
+      </div>
+      <input type="hidden" id="f_tech_comfort"/>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep()">Back</button>
+      <button class="btn-next" onclick="nextStep()">Fears & Goals</button>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 5: FEARS & GOALS ══ -->
+  <div class="panel" id="panel-5">
+    <p class="section-eyebrow">Section 05 of 05</p>
+    <h2 class="section-title">Fears, Reservations<br>& <em>Vision</em></h2>
+    <p class="section-desc">This is where we get honest about what's holding you back — and where we want to end up. Both matter equally.</p>
+
+    <div class="field-group">
+      <label class="field-label">What concerns or reservations do you have about implementing AI?</label>
+      <p class="field-hint">Select everything that resonates — there are no wrong answers.</p>
+      <div class="chip-grid" id="chips_fears">
+        <div class="chip" onclick="toggleChip(this)">It will feel impersonal to our customers</div>
+        <div class="chip" onclick="toggleChip(this)">My team won't trust it or use it</div>
+        <div class="chip" onclick="toggleChip(this)">It's too expensive to implement properly</div>
+        <div class="chip" onclick="toggleChip(this)">We'll become dependent on it and lose control</div>
+        <div class="chip" onclick="toggleChip(this)">Our data or clients' data won't be secure</div>
+        <div class="chip" onclick="toggleChip(this)">AI will replace jobs and affect morale</div>
+        <div class="chip" onclick="toggleChip(this)">It will break what's already working</div>
+        <div class="chip" onclick="toggleChip(this)">We'll invest and not see results</div>
+        <div class="chip" onclick="toggleChip(this)">The technology moves too fast — we'll fall behind again</div>
+        <div class="chip" onclick="toggleChip(this)">I don't understand it well enough to oversee it</div>
+        <div class="chip" onclick="toggleChip(this)">Our industry isn't ready for it</div>
+        <div class="chip" onclick="toggleChip(this)">No specific fears — genuinely open</div>
+      </div>
+      <input type="hidden" id="f_fears"/>
+    </div>
+
+    <div class="field-group">
+      <p class="field-question">Is there a specific fear or concern that isn't on that list — something more personal to your situation?</p>
+      <textarea id="f_fear_other" rows="3" placeholder="Anything specific to your business, team, or customers..."></textarea>
+    </div>
+
+    <div class="field-divider"></div>
+
+    <div class="field-group">
+      <p class="field-question">What would a successful outcome from this engagement look like for you — in 90 days?</p>
+      <p class="field-hint">Be specific. "We feel better about AI" is a start — but "our response time is cut in half" is what we'll build toward.</p>
+      <textarea id="f_outcome_90" rows="4" placeholder="What would need to be true for you to feel this was worth your time and investment..."></textarea>
+    </div>
+
+    <div class="field-group">
+      <p class="field-question">And in 12 months — what does AI-enabled look like for your business at its best?</p>
+      <textarea id="f_outcome_12m" rows="4" placeholder="The version of your business that made this all worth it..."></textarea>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">What is your primary goal for this engagement?</label>
+      <div class="radio-cards" id="rc_primary_goal">
+        <div class="radio-card" onclick="selectRadio('rc_primary_goal', this, 'f_primary_goal', 'Save time — reduce operational workload')">
+          <div class="rc-dot"></div><div class="rc-content"><div class="rc-title">Save time</div><div class="rc-desc">Reduce the operational workload on my team</div></div>
+        </div>
+        <div class="radio-card" onclick="selectRadio('rc_primary_goal', this, 'f_primary_goal', 'Improve customer experience')">
+          <div class="rc-dot"></div><div class="rc-content"><div class="rc-title">Improve customer experience</div><div class="rc-desc">Make interactions faster, warmer, or more consistent</div></div>
+        </div>
+        <div class="radio-card" onclick="selectRadio('rc_primary_goal', this, 'f_primary_goal', 'Make better decisions with data')">
+          <div class="rc-dot"></div><div class="rc-content"><div class="rc-title">Make better decisions with data</div><div class="rc-desc">Turn our existing data into insight and strategy</div></div>
+        </div>
+        <div class="radio-card" onclick="selectRadio('rc_primary_goal', this, 'f_primary_goal', 'Scale without proportional headcount growth')">
+          <div class="rc-dot"></div><div class="rc-content"><div class="rc-title">Scale without hiring proportionally</div><div class="rc-desc">Grow revenue without growing headcount at the same rate</div></div>
+        </div>
+        <div class="radio-card" onclick="selectRadio('rc_primary_goal', this, 'f_primary_goal', 'Stay competitive — not fall behind')">
+          <div class="rc-dot"></div><div class="rc-content"><div class="rc-title">Stay competitive</div><div class="rc-desc">Ensure AI doesn't become a disadvantage against competitors</div></div>
+        </div>
+      </div>
+      <input type="hidden" id="f_primary_goal"/>
+    </div>
+
+    <div class="field-group">
+      <p class="field-question">Is there anything else you want me to know before we meet — context, history, or a gut feeling about what you need?</p>
+      <textarea id="f_anything_else" rows="4" placeholder="Whatever feels important to share that the questions didn't ask..."></textarea>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep()">Back</button>
+      <button class="btn-submit" onclick="buildSummary()">Review My Responses →</button>
+    </div>
+  </div>
+
+  <!-- ══ SUMMARY ══ -->
+  <div class="panel" id="panel-6">
+    <div class="print-header-inject" style="display:none;">
+      <div class="ph-brand">Infinite Spaces · Client Discovery · Confidential</div>
+      <div class="ph-title">Client Discovery <em>Summary</em></div>
+      <div class="ph-meta" id="printMeta"></div>
+    </div>
+    <p class="section-eyebrow">Discovery Summary</p>
+    <h2 class="section-title">Your <em>Profile</em></h2>
+    <p class="section-desc">Here's everything you've shared. Review it before your consultation — and keep a copy for your own reference.</p>
+
+    <div class="summary-grid" id="summaryContent"></div>
+    <div class="sheet-status" id="sheetStatus"></div>
+
+    <div class="print-actions">
+      <button class="btn-print" onclick="window.print()">Print / Save as PDF</button>
+      <button class="btn-copy" id="copyAllBtn" onclick="copyAllText()">Copy All Text</button>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep()">Edit Responses</button>
+    </div>
+  </div>
+
+</div>
+
+<footer class="form-footer">
+  <p>Infinite Spaces · Experience Design & Tech Strategy · infinitespaces.ca</p>
+  <p style="margin-top:6px;"><em>Where technology and humanity evolve together.</em></p>
+</footer>
+
+<script>
+let currentStep = 0;
+const totalSteps = 6;
+
+// Build scales on load
+function buildScale(containerId, hiddenId, max=10) {
+  const wrap = document.getElementById(containerId);
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  for (let i = 1; i <= max; i++) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'scale-btn';
+    btn.textContent = i;
+    btn.onclick = () => {
+      wrap.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById(hiddenId).value = i;
+    };
+    wrap.appendChild(btn);
+  }
+}
+buildScale('scale_fluency', 'f_ai_fluency');
+buildScale('scale_tech_comfort', 'f_tech_comfort');
+
+function updateProgress() {
+  const pct = currentStep === 0 ? 0 : (currentStep / totalSteps) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.querySelectorAll('.step-dot').forEach((dot, i) => {
+    dot.classList.remove('active', 'visited');
+    if (i === currentStep) dot.classList.add('active');
+    else if (i < currentStep) dot.classList.add('visited');
+  });
+}
+
+function showPanel(step) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + step).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  currentStep = step;
+  updateProgress();
+}
+
+function nextStep() { if (currentStep < totalSteps) showPanel(currentStep + 1); }
+function prevStep() { if (currentStep > 0) showPanel(currentStep - 1); }
+function goToStep(step) {
+  const dot = document.querySelectorAll('.step-dot')[step];
+  if (dot.classList.contains('visited') || dot.classList.contains('active')) showPanel(step);
+}
+
+function selectRadio(groupId, el, hiddenId, value) {
+  document.querySelectorAll('#' + groupId + ' .radio-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById(hiddenId).value = value;
+}
+
+function toggleChip(el) {
+  el.classList.toggle('selected');
+}
+
+function getChipValues(containerId) {
+  const chips = document.querySelectorAll('#' + containerId + ' .chip.selected');
+  return Array.from(chips).map(c => c.textContent.trim()).join(', ');
+}
+
+function val(id) {
+  const el = document.getElementById(id);
+  return el ? (el.value || '').trim() : '';
+}
+
+// ── REPLACE THIS with your deployed Apps Script URL ──
+const SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycby2jwOGsPSoePzD3cGbUqjbZ64eL7qebL5BeRXVA-Y4EmAK433zfcDi97gaNWAMzmgpvA/exec';
+
+function submitToSheet(sections) {
+  const statusEl = document.getElementById('sheetStatus');
+  if (!SHEET_WEBHOOK || SHEET_WEBHOOK === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    statusEl.className = 'sheet-status error';
+    statusEl.textContent = 'Sheet webhook not configured — use Copy All Text to save responses.';
+    return;
+  }
+  const payload = { submittedAt: new Date().toISOString() };
+  sections.forEach(s => s.rows.forEach(([k, v]) => { if (v) payload[k] = v; }));
+  statusEl.className = 'sheet-status sending';
+  statusEl.textContent = 'Saving your responses…';
+  fetch(SHEET_WEBHOOK, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    statusEl.className = 'sheet-status success';
+    statusEl.textContent = '✓ Responses saved — Infinite Spaces has been notified.';
+  })
+  .catch(() => {
+    statusEl.className = 'sheet-status error';
+    statusEl.textContent = 'Could not save automatically. Please use Copy All Text below.';
+  });
+}
+
+function buildSummary() {
+  // Collect chip values into hidden inputs
+  document.getElementById('f_ai_tools').value = getChipValues('chips_ai_tools');
+  document.getElementById('f_challenges').value = getChipValues('chips_challenges');
+  document.getElementById('f_crm').value = getChipValues('chips_crm');
+  document.getElementById('f_comms').value = getChipValues('chips_comms');
+  document.getElementById('f_marketing').value = getChipValues('chips_marketing');
+  document.getElementById('f_ops').value = getChipValues('chips_ops');
+  document.getElementById('f_fears').value = getChipValues('chips_fears');
+
+  // Populate print header meta
+  const nameVal = val('f_name');
+  const companyVal = val('f_company');
+  const dateStr = new Date().toLocaleDateString('en-CA', { year:'numeric', month:'long', day:'numeric' });
+  const metaParts = [];
+  if (nameVal) metaParts.push(nameVal);
+  if (companyVal) metaParts.push(companyVal);
+  metaParts.push(dateStr);
+  const metaEl = document.getElementById('printMeta');
+  if (metaEl) metaEl.textContent = metaParts.join(' · ');
+
+  const sections = [
+    {
+      title: '01 · Business & Context',
+      rows: [
+        ['Name', val('f_name')],
+        ['Role', val('f_role')],
+        ['Company', val('f_company')],
+        ['Industry', val('f_industry')],
+        ['Email', val('f_email')],
+        ['Website', val('f_website')],
+        ['Business Description', val('f_biz_desc')],
+        ['Team Size', val('f_team_size')],
+        ['Customer Base', val('f_customers')],
+        ['Typical Operations', val('f_ops_week')],
+      ]
+    },
+    {
+      title: '02 · AI Curiosity & Fluency',
+      rows: [
+        ['Why Now', val('f_why_now')],
+        ['AI Fluency (1–10)', val('f_ai_fluency')],
+        ['AI Tools Used', val('f_ai_tools')],
+        ['Prior AI Experience', val('f_ai_prev')],
+        ['What Worked / Didn\'t', val('f_ai_exp')],
+        ['Dream Use of AI', val('f_ai_dream')],
+      ]
+    },
+    {
+      title: '03 · Pain Points & Friction',
+      rows: [
+        ['Biggest Frustration', val('f_top_pain')],
+        ['Operational Challenges', val('f_challenges')],
+        ['Repetitive Tasks', val('f_repetitive')],
+        ['Customer Experience Gaps', val('f_cx_gaps')],
+        ['Urgency Level', val('f_urgency')],
+      ]
+    },
+    {
+      title: '04 · Tech Stack',
+      rows: [
+        ['CRM Tools', val('f_crm') + (val('f_crm_other') ? ' · ' + val('f_crm_other') : '')],
+        ['Communication Tools', val('f_comms')],
+        ['Marketing Tools', val('f_marketing')],
+        ['Operations / Finance', val('f_ops') + (val('f_ops_other') ? ' · ' + val('f_ops_other') : '')],
+        ['Tools Team Loves', val('f_beloved_tools')],
+        ['Tools to Replace', val('f_hated_tools')],
+        ['Tech Adoption Comfort (1–10)', val('f_tech_comfort')],
+      ]
+    },
+    {
+      title: '05 · Fears, Reservations & Vision',
+      rows: [
+        ['AI Concerns', val('f_fears')],
+        ['Other Concerns', val('f_fear_other')],
+        ['Success in 90 Days', val('f_outcome_90')],
+        ['Success in 12 Months', val('f_outcome_12m')],
+        ['Primary Goal', val('f_primary_goal')],
+        ['Additional Context', val('f_anything_else')],
+      ]
+    }
+  ];
+
+  const container = document.getElementById('summaryContent');
+  container.innerHTML = '';
+  sections.forEach(s => {
+    const secEl = document.createElement('div');
+    secEl.className = 'summary-section';
+    let html = `<div class="summary-section-title">${s.title}</div><div class="summary-rows">`;
+    s.rows.forEach(([k, v]) => {
+      if (v) html += `<div class="summary-row"><div class="sr-key">${k}</div><div class="sr-val">${v.replace(/\n/g,'<br/>')}</div></div>`;
+    });
+    html += '</div>';
+    secEl.innerHTML = html;
+    container.appendChild(secEl);
+  });
+
+  showPanel(6);
+  submitToSheet(sections);
+}
+
+function copyAllText() {
+  const sections = document.querySelectorAll('.summary-section');
+  let text = 'INFINITE SPACES — CLIENT DISCOVERY SUMMARY\n\n';
+  sections.forEach(s => {
+    text += s.querySelector('.summary-section-title').textContent + '\n';
+    s.querySelectorAll('.summary-row').forEach(r => {
+      const k = r.querySelector('.sr-key').textContent;
+      const v = r.querySelector('.sr-val').innerText;
+      if (v) text += `  ${k}: ${v}\n`;
+    });
+    text += '\n';
+  });
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyAllBtn');
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => btn.textContent = 'Copy All Text', 2500);
+  });
+}
+
+updateProgress();
+</script>
+</body>
+</html>
