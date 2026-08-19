@@ -20,7 +20,7 @@ export default function Hero() {
   playsInline
   src="/assets/hero-logo.mp4"
   className="w-full h-full max-w-[90vw] md:max-w-none object-cover md:object-cover object-[center_20%] scale-125 md:scale-100"
-  onLoadedData={(_e) => setIsLoading(true)}
+  onLoadedData={() => { setIsLoaded(true); }}
 />
         
         {/* Subtle dark overlay for contrast */}
