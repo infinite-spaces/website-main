@@ -65,14 +65,20 @@ export default function AuditLanding() {
           Takes one email to get started. I'll handle the rest.
         </p>
 
-        <a
-          href="#contact"
-           className="group inline-flex items-center gap-3 px-8 py-4 bg-gold text-cream uppercase tracking-[0.25em] font-medium text-[10px] hover:bg-sage-light transition-all duration-500 hover:-translate-y-1"
-              style={{ borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%' }}
-        >
-          Request Your Complimentary AI Audit
-          <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-        </a>
+<button
+  type="button"
+  onClick={() => {
+    const contactElement = document.getElementById('contact');
+    if (contactElement) {
+      contactElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  }}
+  className="group inline-flex items-center gap-3 px-8 py-4 bg-gold text-cream uppercase tracking-[0.25em] font-medium text-[10px] hover:bg-sage-light transition-all cursor-pointer"
+  style={{ borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%' }}
+>
+  Request Your Complimentary AI Audit
+  <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+</button>
       </section>
 
       {/* ── VALUE CARDS ── */}
@@ -171,17 +177,22 @@ export default function AuditLanding() {
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            <a
-              href="#contact"
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-sage text-cream uppercase tracking-[0.25em] font-medium text-[10px] hover:bg-sage-light transition-all duration-500 hover:-translate-y-1"
-              style={{ borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%' }}
-            >
-              Get in Touch
-              <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </a>
-          </div>
+<button
+  type="button"
+  onClick={() => {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  }}
+  className="group inline-flex items-center gap-3 px-8 py-4 bg-sage text-cream uppercase tracking-[0.25em] font-medium text-[10px] hover:bg-sage-light transition-all cursor-pointer"
+  style={{ borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%' }}
+>
+  Get in Touch
+  <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+  </svg>
+</button>          </div>
         </div>
       </section>
 
@@ -196,15 +207,15 @@ export default function AuditLanding() {
             >
               How It Works
             </span>
-            <h2
-              className={`font-bungee text-2xl md:text-3xl lg:text-4xl text-charcoal leading-relaxed max-w-3xl mx-auto transition-all duration-700 delay-100 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-              }`}
-            >
-              FROM AUDIT TO
-              <br />
-              <span className="text-gold">IMPLEMENTATION</span>
-            </h2>
+<h2
+  className={`font-bungee font-bold text-2xl md:text-3xl lg:text-4xl text-charcoal leading-relaxed max-w-3xl mx-auto transition-all duration-700 delay-100 ${
+    isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+  }`}
+>
+  FROM AUDIT TO
+  <br />
+  <span className="text-gold font-bold">IMPLEMENTATION</span>
+</h2>
             <p
               className={`text-charcoal/50 italic mt-4 mb-8 transition-all duration-700 delay-200 ${
                 isVisible ? 'opacity-100' : 'opacity-0'
@@ -221,36 +232,36 @@ export default function AuditLanding() {
             </div>
           </div>
 
-          <div className="relative flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-0">
-            {/* Connecting Line (desktop) */}
-            <div className="hidden sm:block absolute top-7 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
+<div className="relative flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-0">
+  {/* Connecting Line (desktop) */}
+  <div className="hidden sm:block absolute top-7 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
 
-            {[
-              { num: '1', label: 'Free AI Audit\n30-min call' },
-              { num: '2', label: 'Deep Dive\nRapid Audit' },
-              { num: '3', label: 'Strategy Brief\nDelivered to You' },
-              { num: '4', label: 'First Solution\nImplemented' },
-              { num: '5', label: 'Forward Roadmap\n& Handoff' },
-            ].map((step, i) => (
-              <div
-                key={step.num}
-                className={`flex flex-col items-center gap-3 sm:flex-1 sm:max-w-[180px] sm:px-4 relative z-10 transition-all duration-700 ${
-                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                }`}
-                style={{ transitionDelay: `${800 + i * 100}ms` }}
-              >
-                <div
-                  className="w-14 h-14 bg-cream border border-gold flex items-center justify-center"
-                  style={{ borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%' }}
-                >
-                  <span className="font-cormorant text-xl italic text-gold">{step.num}</span>
-                </div>
-                <span className="font-bungee text-[9px] tracking-[0.22em] text-charcoal/50 text-center leading-relaxed whitespace-pre-line">
-                  {step.label}
-                </span>
-              </div>
-            ))}
-          </div>
+  {[
+    { num: '1', label: 'Free AI Audit\n30-min call' },
+    { num: '2', label: 'Deep Dive\nRapid Audit' },
+    { num: '3', label: 'Strategy Brief\nDelivered to You' },
+    { num: '4', label: 'First Solution\nImplemented' },
+    { num: '5', label: 'Forward Roadmap\n& Handoff' },
+  ].map((step, i) => (
+    <div
+      key={step.num}
+      className={`flex flex-col items-center gap-3 sm:flex-1 sm:max-w-[180px] sm:px-4 relative z-10 transition-all duration-700 ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+      }`}
+      style={{ transitionDelay: `${800 + i * 100}ms` }}
+    >
+      <div
+        className="w-14 h-14 bg-cream border border-gold flex items-center justify-center"
+        style={{ borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%' }}
+      >
+<span className="font-cormorant text-2xl font-bold italic text-gold">{step.num}</span>
+</div>
+<span className="font-bungee text-[13px] sm:text-[14px] font-bold tracking-[0.15em] text-charcoal text-center leading-relaxed whitespace-pre-line">
+  {step.label}
+</span>
+    </div>
+  ))}
+</div>
 
           {/* CTA to case studies */}
           <div
@@ -258,16 +269,19 @@ export default function AuditLanding() {
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            <a
-              href="/portfolio/case-studies"
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-gold text-charcoal uppercase tracking-[0.25em] font-medium text-[10px] hover:bg-gold-light transition-all duration-500 hover:-translate-y-1"
-              style={{ borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%' }}
-            >
-              View Case Studies
-              <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </a>
+<button
+  type="button"
+  onClick={() => {
+    window.location.hash = '/portfolio/case-studies';
+  }}
+  className="group inline-flex items-center gap-3 px-8 py-4 bg-gold text-charcoal uppercase tracking-[0.25em] font-medium text-[10px] hover:bg-gold-light transition-all cursor-pointer"
+  style={{ borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%' }}
+>
+  View Case Studies
+  <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+  </svg>
+</button>
           </div>
         </div>
       </section>

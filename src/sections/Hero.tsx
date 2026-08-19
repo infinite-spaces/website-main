@@ -75,13 +75,19 @@ export default function Hero() {
           </a>
           
           {/* Start a Conversation - Contact */}
-          <a 
-            href="#contact"
-            className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#C9A84C] to-[#E2C97A] text-[#1A1C18] text-[10px] tracking-[3px] uppercase font-medium rounded-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-500"
-          >
-            Start a Conversation
-            <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-          </a>
+<button
+  type="button"
+  onClick={() => {
+    const contactElement = document.getElementById('contact');
+    if (contactElement) {
+      contactElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  }}
+  className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#C9A84C] to-[#E2C97A] text-[#1A1C18] text-[10px] tracking-[3px] uppercase font-medium rounded-sm cursor-pointer"
+>
+  Start a Conversation
+  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+</button>
           
           {/* Explore Work - Portfolio */}
           <a 
