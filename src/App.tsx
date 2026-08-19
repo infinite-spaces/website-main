@@ -4,6 +4,7 @@ import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import ProductBanner from './components/ProductBanner';
 import Hero from './sections/Hero';
+import AuditLanding from './sections/AuditLanding';
 import Philosophy from './sections/Philosophy';
 import Services from './sections/Services';
 import Portfolio from './sections/Portfolio';
@@ -24,8 +25,8 @@ function HomePage() {
       {/* Hero Section */}
       <Hero />
 
-      {/* Philosophy Section */}
-      <Philosophy />
+      {/* AuditLanding Section */}
+      <AuditLanding />
 
       {/* Services Section */}
       <Services />
@@ -38,6 +39,9 @@ function HomePage() {
 
       {/* Blog Section */}
       <Blog />
+
+      {/* Philosophy Section */}
+      <Philosophy /> 
 
       {/* Contact Section */}
       <Contact />
